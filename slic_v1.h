@@ -1,5 +1,5 @@
-#ifndef SLIC_H
-#define SLIC_H
+#ifndef SLICV1_H
+#define SLICV1_H
 
 /* slic.h.
  *
@@ -36,7 +36,7 @@ using namespace std;
  * distance parameter.
  */
 class Slic_v1 {
-    private:
+    public:
         /* The cluster assignments and distance values for each pixel. */
         vec2di clusters;
         vec2dd distances;
@@ -51,15 +51,9 @@ class Slic_v1 {
         int step, nc, ns;
         
         /* Compute the distance between a center and an individual pixel. */
-        double compute_dist(int ci, CvPoint pixel, CvScalar colour);
-        /* Find the pixel with the lowest gradient in a 3x3 surrounding. */
-        CvPoint find_local_minimum(IplImage *image, CvPoint center);
-        
-        /* Remove and initialize the 2d vectors. */
-        void clear_data();
-        void init_data(IplImage *image);
 
-    public:
+
+
         /* Class constructors and deconstructors. */
         Slic_v1();
         ~Slic_v1();
@@ -73,6 +67,14 @@ class Slic_v1 {
         void display_center_grid(IplImage *image, CvScalar colour);
         void display_contours(IplImage *image, CvScalar colour);
         void colour_with_cluster_means(IplImage *image);
+
+        double compute_dist(int ci, CvPoint pixel, CvScalar colour);
+        /* Find the pixel with the lowest gradient in a 3x3 surrounding. */
+        CvPoint find_local_minimum(IplImage *image, CvPoint center);
+
+        /* Remove and initialize the 2d vectors. */
+        void clear_data();
+        void init_data(IplImage *image);
 };
 
 #endif
