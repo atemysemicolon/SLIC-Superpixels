@@ -1,16 +1,16 @@
-#include "slic.h"
+#include "slic_v1.h"
 
 /*
  * Constructor. Nothing is done here.
  */
-Slic::Slic() {
+Slic_v1::Slic_v1() {
 
 }
 
 /*
  * Destructor. Clear any present data.
  */
-Slic::~Slic() {
+Slic_v1::~Slic_v1() {
     clear_data();
 }
 
@@ -20,7 +20,7 @@ Slic::~Slic() {
  * Input : -
  * Output: -
  */
-void Slic::clear_data() {
+void Slic_v1::clear_data() {
     clusters.clear();
     distances.clear();
     centers.clear();
@@ -34,7 +34,7 @@ void Slic::clear_data() {
  * Input : The image (IplImage*).
  * Output: -
  */
-void Slic::init_data(IplImage *image) {
+void Slic_v1::init_data(IplImage *image) {
     /* Initialize the cluster and distance matrices. */
     for (int i = 0; i < image->width; i++) { 
         vector<int> cr;
@@ -76,7 +76,7 @@ void Slic::init_data(IplImage *image) {
  *         the pixel (CvScalar).
  * Output: The distance (double).
  */
-double Slic::compute_dist(int ci, CvPoint pixel, CvScalar colour) {
+double Slic_v1::compute_dist(int ci, CvPoint pixel, CvScalar colour) {
     double dc = sqrt(pow(centers[ci][0] - colour.val[0], 2) + pow(centers[ci][1]
             - colour.val[1], 2) + pow(centers[ci][2] - colour.val[2], 2));
     double ds = sqrt(pow(centers[ci][3] - pixel.x, 2) + pow(centers[ci][4] - pixel.y, 2));
@@ -94,7 +94,7 @@ double Slic::compute_dist(int ci, CvPoint pixel, CvScalar colour) {
  * Input : The image (IplImage*) and the pixel center (CvPoint).
  * Output: The local gradient minimum (CvPoint).
  */
-CvPoint Slic::find_local_minimum(IplImage *image, CvPoint center) {
+CvPoint Slic_v1::find_local_minimum(IplImage *image, CvPoint center) {
     double min_grad = FLT_MAX;
     CvPoint loc_min = cvPoint(center.x, center.y);
     
@@ -131,7 +131,7 @@ CvPoint Slic::find_local_minimum(IplImage *image, CvPoint center) {
  * Input : The Lab image (IplImage*), the stepsize (int), and the weight (int).
  * Output: -
  */
-void Slic::generate_superpixels(IplImage *image, int step, int nc) {
+void Slic_v1::generate_superpixels(IplImage *image, int step, int nc) {
     this->step = step;
     this->nc = nc;
     this->ns = step;
@@ -213,7 +213,7 @@ void Slic::generate_superpixels(IplImage *image, int step, int nc) {
  * Input : The image (IplImage*).
  * Output: -
  */
-void Slic::create_connectivity(IplImage *image) {
+void Slic_v1::create_connectivity(IplImage *image) {
     int label = 0, adjlabel = 0;
     const int lims = (image->width * image->height) / ((int)centers.size());
     
@@ -282,7 +282,7 @@ void Slic::create_connectivity(IplImage *image) {
  * Input : The image to display upon (IplImage*) and the colour (CvScalar).
  * Output: -
  */
-void Slic::display_center_grid(IplImage *image, CvScalar colour) {
+void Slic_v1::display_center_grid(IplImage *image, CvScalar colour) {
     for (int i = 0; i < (int) centers.size(); i++) {
         cvCircle(image, cvPoint(centers[i][3], centers[i][4]), 2, colour, 2);
     }
@@ -294,7 +294,7 @@ void Slic::display_center_grid(IplImage *image, CvScalar colour) {
  * Input : The target image (IplImage*) and contour colour (CvScalar).
  * Output: -
  */
-void Slic::display_contours(IplImage *image, CvScalar colour) {
+void Slic_v1::display_contours(IplImage *image, CvScalar colour) {
     const int dx8[8] = {-1, -1,  0,  1, 1, 1, 0, -1};
 	const int dy8[8] = { 0, -1, -1, -1, 0, 1, 1,  1};
 	
@@ -347,7 +347,7 @@ void Slic::display_contours(IplImage *image, CvScalar colour) {
  * Input : The target image (IplImage*).
  * Output: -
  */
-void Slic::colour_with_cluster_means(IplImage *image) {
+void Slic_v1::colour_with_cluster_means(IplImage *image) {
     vector<CvScalar> colours(centers.size());
     
     /* Gather the colour values per cluster. */

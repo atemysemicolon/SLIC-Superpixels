@@ -35,7 +35,7 @@ using namespace std;
  * step-size (distance between initial cluster locations) and the colour
  * distance parameter.
  */
-class Slic {
+class Slic_v1 {
     private:
         /* The cluster assignments and distance values for each pixel. */
         vec2di clusters;
@@ -61,8 +61,8 @@ class Slic {
 
     public:
         /* Class constructors and deconstructors. */
-        Slic();
-        ~Slic();
+        Slic_v1();
+        ~Slic_v1();
         
         /* Generate an over-segmentation for an image. */
         void generate_superpixels(IplImage *image, int step, int nc);
