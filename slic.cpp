@@ -1,5 +1,7 @@
 #include "slic.h"
 
+
+//DONE
 void Slic::init_data(cv::Mat image, int step, int nc)
 {
     clear_data();
@@ -8,6 +10,7 @@ void Slic::init_data(cv::Mat image, int step, int nc)
     this->nc=nc;
     width = image.cols;
     height = image.rows;
+    center_counts.clear();
     clusters = cv::Mat(image.rows, image.cols, CV_32FC1, cv::Scalar(-1)).clone();
     distances = cv::Mat(image.rows, image.cols, CV_32FC1, cv::Scalar(FLT_MAX)).clone();
     centers.create(image.rows,image.cols, CV_32FC(5));
@@ -33,6 +36,8 @@ void Slic::init_data(cv::Mat image, int step, int nc)
         }
 
 }
+
+
 cv::Point Slic::find_local_minimum(cv::Mat image, cv::Point center)
 {
     double min_grad = FLT_MAX;
@@ -62,11 +67,52 @@ cv::Point Slic::find_local_minimum(cv::Mat image, cv::Point center)
     return  local_minima;
 }
 
-
-void Slic::clear_data()
+void Slic::generate_superpixels(cv::Mat image, int step, int nc)
 {
-    center_counts.clear();
+    init_data(image, step, nc);
+
+
+
+    for (int i = 0; i < NR_ITERATIONS; i++)
+    {
+        //Reset not required as init_data takes care of it
+        //Maybe required!!!!!! Dry run it
+
+        for (int m = 0; m < (int) centers.cols; m++)
+            for (int n = 0; n < (int) centers.rows; n++)
+            {
+                /* Only compare to pixels in a 2 x step by 2 x step region. */
+                for (int k = centers.at<float>(n,m)[3] - step; k < centers.at<float>(n,m)[3] + step; k++)
+                {
+                    for (int l = centers.at<float>(n,m)[4] - step; l < centers.at<float>(n,m)[4] + step; l++)
+                    {
+
+                        //LEFT CODING HERE
+
+                        if (k >= 0 && k < image->width && l >= 0 && l < image->height)
+                        {
+                            CvScalar colour = cvGet2D(image, l, k);
+                            double d = compute_dist(j, cvPoint(k,l), colour);
+
+                            /* Update cluster allocation if the cluster minimizes the
+                               distance. */
+                            if (d < distances[k][l])
+                            {
+                                distances[k][l] = d;
+                                clusters[k][l] = j;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+    }
+
 }
+
+
+
 
 
 
